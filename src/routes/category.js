@@ -87,4 +87,28 @@ router.delete("/:id", (req, res) => {
   });
 });
 
+// Get all products by category
+router.get("/category/:categoryId", (req, res) => {
+  const { categoryId } = req.params;
+
+  const query = `
+    SELECT p.product_id as ProductId, p.product_name as ProductName, 
+           c.category_name as CategoryName, c.category_id as CategoryId
+    FROM products p
+    JOIN categories c ON p.category_id = c.category_id
+    WHERE p.category_id = ?
+  `;
+
+  db.query(query, [categoryId], (err, results) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Error fetching products for the category");
+    } else if (results.length === 0) {
+      res.status(404).send("No products found for this category");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 export default router;
