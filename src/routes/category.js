@@ -3,10 +3,17 @@ import db from "../db/connection.js";
 
 const router = express.Router();
 
-// Get all categories
+// Get all categories with pagination
 router.get("/", (req, res) => {
-  const query = "SELECT * FROM categories";
-  db.query(query, (err, results) => {
+  // Get page and pageSize from query parameters, default to 1 and 10 respectively
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+  const offset = (page - 1) * pageSize;
+
+  // Query to fetch categories with pagination
+  const query = "SELECT * FROM categories LIMIT ?, ?";
+
+  db.query(query, [offset, pageSize], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).send("Error fetching categories");

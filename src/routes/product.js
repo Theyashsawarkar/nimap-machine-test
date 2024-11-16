@@ -3,14 +3,23 @@ import db from "../db/connection.js";
 
 const router = express.Router();
 
-// Get all products
+// Get all products with pagination
 router.get("/", (req, res) => {
-  const query = ` SELECT p.product_id as ProductId, p.product_name as ProductName, 
-c.category_name as CategoryName, c.category_id as CategoryId
-FROM products p 
-JOIN categories c ON p.category_id = c.category_id ;`;
+  // Get page and pageSize from query parameters, default to 1 and 10 respectively
+  const page = parseInt(req.query.page) || 1;
+  const pageSize = parseInt(req.query.pageSize) || 10;
+  const offset = (page - 1) * pageSize;
 
-  db.query(query, (err, results) => {
+  // Query to fetch products with pagination
+  const query = `
+    SELECT p.product_id as ProductId, p.product_name as ProductName, 
+           c.category_name as CategoryName, c.category_id as CategoryId
+    FROM products p 
+    JOIN categories c ON p.category_id = c.category_id
+    LIMIT ?, ?
+  `;
+
+  db.query(query, [offset, pageSize], (err, results) => {
     if (err) {
       console.error(err);
       res.status(500).send("Error fetching products");
