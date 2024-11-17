@@ -1,0 +1,16 @@
+<!-- /src/views/editCategory.ejs -->
+<%- include('layout') %>
+
+<h1 class="text-4xl font-bold text-center my-8">Edit Category</h1>
+
+<div class="container mx-auto">
+  <form action="/categories/edit/<%= category.category_id %>" method="POST" class="bg-white p-4 shadow-md rounded-md">
+    <div class="mb-4">
+      <label for="category_name" class="block text-gray-700 font-semibold mb-2">Category Name</label>
+      <input type="text" id="category_name" name="category_name" value="<%= category.category_name %>" class="w-full px-4 py-2 border border-gray-300 rounded-md" required>
+    </div>
+    <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">Update Category</button>
+  </form>
+</div>
+
+<%- include('footer') %>

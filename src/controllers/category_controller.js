@@ -15,12 +15,33 @@ const fetchAllCategories = (req, res) => {
       console.error(err);
       res.status(500).send("Error fetching categories");
     } else {
-      res.json(results);
+      // Query to get the total number of categories for pagination
+      const countQuery = "SELECT COUNT(*) AS total FROM categories";
+      
+      db.query(countQuery, (err, countResult) => {
+        if (err) {
+          console.error(err);
+          res.status(500).send("Error fetching category count");
+        } else {
+          const totalCategories = countResult[0].total;
+          const totalPages = Math.ceil(totalCategories / pageSize);
+
+          // Render the categories view and pass categories, page, and pagination info
+          res.render('categories', {
+            categories: results,
+            page: page,
+            pageSize: pageSize,
+            totalPages: totalPages,
+            totalCategories: totalCategories
+          });
+        }
+      });
     }
   });
 };
 
-// Get a single category by ID
+
+// Get a single category by ID and render the category view
 const fetchCategoryWithId = (req, res) => {
   const query = "SELECT * FROM categories WHERE category_id = ?";
 
@@ -31,10 +52,12 @@ const fetchCategoryWithId = (req, res) => {
     } else if (results.length === 0) {
       res.status(404).send("Category not found");
     } else {
-      res.json(results[0]);
+      // Render the category.ejs view and pass the category data
+      res.render('category', { category: results[0] });
     }
   });
 };
+
 
 // Add a new category
 const addNewCategory = (req, res) => {
@@ -84,7 +107,7 @@ const deleteCategory = (req, res) => {
   });
 };
 
-// Get all products by category
+// Get all products by category and render the view
 const fetchProductsByCategory = (req, res) => {
   const { categoryId } = req.params;
 
@@ -101,12 +124,18 @@ const fetchProductsByCategory = (req, res) => {
       console.error(err);
       res.status(500).send("Error fetching products for the category");
     } else if (results.length === 0) {
-      res.status(404).send("No products found for this category");
+      // Render the view with an empty products array and category name
+      res.render('productsByCategory', { category_name: "Unknown Category", products: [] });
     } else {
-      res.json(results);
+      // Get the category name from the first result
+      const categoryName = results[0].CategoryName;
+
+      // Render the view with the category name and products
+      res.render('productsByCategory', { category_name: categoryName, products: results });
     }
   });
 };
+
 
 export {
   addNewCategory,
@@ -114,5 +143,6 @@ export {
   fetchAllCategories,
   fetchCategoryWithId,
   fetchProductsByCategory,
-  updateCategory,
+  updateCategory
 };
+

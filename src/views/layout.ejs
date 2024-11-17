@@ -1,0 +1,31 @@
+<!-- /src/views/layout.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Application</title>
+
+  <!-- Add the CDN link here -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Optionally add custom CSS or JS here -->
+</head>
+<body class="bg-gray-100">
+  <header>
+    <!-- Header content (e.g., navigation bar) -->
+  </header>
+
+  <main>
+    <!-- This is where the content of the individual views will be inserted -->
+    <%- body %>
+  </main>
+
+  <footer>
+    <!-- Footer content -->
+  </footer>
+
+  <!-- Optional external JS or libraries -->
+</body>
+</html>
