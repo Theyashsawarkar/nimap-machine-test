@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product and Category Manager</title>
+  <style>
+    /* Same styles as provided */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    form {
+      margin-bottom: 20px;
+    }
+
+    input,
+    select {
+      padding: 10px;
+      margin: 5px 0;
+      width: calc(100% - 20px);
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    button {
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .container ul {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .container ul li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 8px;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .action-btns {
+      display: flex;
+      gap: 10px;
+    }
+
+    .delete-btn {
+      background-color: #dc3545;
+      color: white;
+      padding: 5px 10px;
+    }
+
+    .delete-btn:hover {
+      background-color: #c82333;
+    }
+
+    .update-btn {
+      background-color: #007bff;
+      color: white;
+      padding: 5px 10px;
+    }
+
+    .update-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Manage Categories</h1>
+    <form id="categoryForm">
+      <input type="text" id="categoryName" placeholder="Enter category name" required>
+      <button type="submit">Add Category</button>
+    </form>
+    <ul id="categoryList">No categories available</ul>
+
+    <h1>Manage Products</h1>
+    <form id="productForm">
+      <input type="text" id="productName" placeholder="Enter product name" required>
+      <select id="categorySelect">
+        <option value="" disabled selected>Select a category</option>
+      </select>
+      <button type="submit">Add Product</button>
+    </form>
+    <ul id="productList">No products available</ul>
+
+    <div id="paginationControls"></div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:3000/api';
+
+    // DOM elements
+    const categoryForm = document.getElementById('categoryForm');
+    const productForm = document.getElementById('productForm');
+    const categoryNameInput = document.getElementById('categoryName');
+    const productNameInput = document.getElementById('productName');
+    const categorySelect = document.getElementById('categorySelect');
+    const categoryList = document.getElementById('categoryList');
+    const productList = document.getElementById('productList');
+    const paginationControls = document.getElementById('paginationControls');
+
+    let currentCategoryPage = 1;
+    let currentProductPage = 1;
+    const pageSize = 5; // Number of items per page
+
+    async function apiCall(url, method, data = null) {
+      const options = {method, headers: {'Content-Type': 'application/json'}};
+      if (data) options.body = JSON.stringify(data);
+
+      const response = await fetch(url, options);
+      return response.ok ? response.json() : Promise.reject(await response.json());
+    }
+
+    async function fetchCategories() {
+      try {
+        // Make the API call
+        const response = await apiCall(`${API_BASE}/categories`, 'GET');
+        console.log('Categories API Response:', response);
+
+        // Validate that the response is an array
+        if (!Array.isArray(response)) {
+          throw new Error('Invalid API response: expected an array');
+        }
+
+        // Clear the existing category list and dropdown
+        categoryList.innerHTML = '';
+        categorySelect.innerHTML = '<option value="" disabled selected>Select a category</option>';
+
+        // Populate categories into the UI
+        response.forEach(category => {
+          // Add category to the list
+          const li = document.createElement('li');
+          li.innerHTML = `
+        ${category.category_name}
+        <div class="action-btns">
+          <button class="update-btn" onclick="updateCategory(${category.category_id}, '${category.category_name}')">Update</button>
+          <button class="delete-btn" onclick="deleteCategory(${category.category_id})">Delete</button>
+        </div>
+      `;
+          categoryList.appendChild(li);
+
+          // Add category to the dropdown
+          const option = document.createElement('option');
+          option.value = category.category_id;
+          option.textContent = category.category_name;
+          categorySelect.appendChild(option);
+        });
+
+        // If pagination is needed, handle it here (for now, there is no pagination in the API response)
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    }
+
+    async function fetchProducts() {
+      try {
+        // Make the API call
+        const response = await apiCall(`${API_BASE}/products`, 'GET');
+        console.log('Products API Response:', response);
+
+        // Validate that the response is an array
+        if (!Array.isArray(response)) {
+          throw new Error('Invalid API response: expected an array');
+        }
+
+        // Clear the existing product list
+        productList.innerHTML = '';
+
+        // Populate products into the UI
+        response.forEach(product => {
+          // Add product to the list
+          const li = document.createElement('li');
+          li.innerHTML = `
+        <div>
+          <strong>Product ID :</strong> ${product.ProductId} <br>
+          <strong>Product Name :</strong> ${product.ProductName} <br>
+          <strong>Category :</strong> ${product.CategoryName}
+        </div>
+        <div class="action-btns">
+          <button class="update-btn" onclick="updateProduct(${product.ProductId}, '${product.ProductName}', ${product.CategoryId})">Update</button>
+          <button class="delete-btn" onclick="deleteProduct(${product.ProductId})">Delete</button>
+        </div>
+      `;
+          productList.appendChild(li);
+        });
+
+        // If pagination is needed, handle it here (for now, there is no pagination in the API response)
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    }
+
+    function updatePaginationControls(type, currentPage, totalPages) {
+      paginationControls.innerHTML = '';
+      const container = document.createElement('div');
+      container.innerHTML = `
+        <button ${currentPage === 1 ? 'disabled' : ''} onclick="changePage('${type}', ${currentPage - 1})">Prev</button>
+        <span>Page ${currentPage} of ${totalPages}</span>
+        <button ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage('${type}', ${currentPage + 1})">Next</button>
+      `;
+      paginationControls.appendChild(container);
+    }
+
+    function changePage(type, newPage) {
+      if (type === 'category') {
+        currentCategoryPage = newPage;
+        fetchCategories(currentCategoryPage);
+      } else if (type === 'product') {
+        currentProductPage = newPage;
+        fetchProducts(currentProductPage);
+      }
+    }
+
+    categoryForm.addEventListener('submit', async (e) => {
+      e.preventDefault(); // Prevent default form submission
+      const category_name = categoryNameInput.value.trim(); // Extract and trim input
+      if (!category_name) return; // Ensure category_name is not empty
+
+      try {
+        // Send POST request with correct field name
+        await apiCall(`${API_BASE}/categories`, 'POST', {category_name});
+        categoryNameInput.value = ''; // Clear input after success
+        fetchCategories(currentCategoryPage); // Refresh categories
+      } catch (error) {
+        console.error('Error adding category:', error); // Log errors
+      }
+    });
+
+    productForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const product_name = productNameInput.value.trim();
+      const category_id = categorySelect.value;
+
+      if (!product_name || !category_id) return;
+
+      try {
+        console.log(product_name, category_id);
+        const response = await apiCall(`${API_BASE}/products`, 'POST', {product_name, category_id});
+        console.log(response.message); // Handle the success message
+        productNameInput.value = ''; // Clear input
+        fetchProducts(currentProductPage); // Refresh the list of products
+      } catch (error) {
+        console.error('Error adding product:', error.message || error); // Log the error
+      }
+    });
+
+    async function updateCategory(categoryId, currentName) {
+      const newName = prompt("Enter new category name:", currentName);
+      if (newName && newName !== currentName) {
+        try {
+          const response = await apiCall(`${API_BASE}/categories/${categoryId}`, "PUT", {
+            category_name: newName, // Correct key for the API
+          });
+          console.log(response.message); // Handle success message
+          fetchCategories(currentCategoryPage);
+        } catch (error) {
+          console.error("Error updating category:", error.message || error);
+        }
+      }
+    }
+
+    async function deleteCategory(categoryId) {
+      if (confirm("Are you sure you want to delete this category?")) {
+        try {
+          const response = await apiCall(`${API_BASE}/categories/${categoryId}`, "DELETE");
+          console.log(response.message); // Handle success message
+          fetchCategories(currentCategoryPage);
+        } catch (error) {
+          console.error("Error deleting category:", error.message || error);
+        }
+      }
+    }
+
+    async function updateProduct(productId, currentName) {
+      const newName = prompt('Enter new product name:', currentName);
+      if (newName && newName !== currentName) {
+        try {
+          await apiCall(`${API_BASE}/products/${productId}`, 'PUT', {productName: newName});
+          fetchProducts(currentProductPage);
+        } catch (error) {
+          console.error('Error updating product:', error);
+        }
+      }
+    }
+
+    async function deleteProduct(productId) {
+      if (confirm('Are you sure you want to delete this product?')) {
+        try {
+          const response = await apiCall(`${API_BASE}/products/${productId}`, 'DELETE');
+          // Check if response is a JSON object with a message
+          if (response.message) {
+            console.log(response.message); // Log success message
+          }
+          fetchProducts(currentProductPage); // Refresh the list of products
+        } catch (error) {
+          // If an error is thrown, log the error message
+          console.error('Error deleting product:', error.message || error);
+        }
+      }
+    }
+
+    // Initial load
+    fetchCategories(currentCategoryPage);
+    fetchProducts(currentProductPage);
+  </script>
+</body>
+
+</html>
