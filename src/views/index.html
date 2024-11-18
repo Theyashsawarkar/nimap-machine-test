@@ -110,6 +110,12 @@
     </form>
     <ul id="productList">No products available</ul>
 
+    <div>
+
+      <h1> Fetch Products by Category </h1>
+      <button onclick="redirectToProducts()">Fetch Products by Category</button>
+    </div>
+
     <div id="paginationControls"></div>
   </div>
 
@@ -129,6 +135,11 @@
     let currentCategoryPage = 1;
     let currentProductPage = 1;
     const pageSize = 5; // Number of items per page
+
+    function redirectToProducts() {
+      let baseUrl = window.location.origin;
+      window.location.href = baseUrl + '/fetch_products_by_category.html';
+    }
 
     async function apiCall(url, method, data = null) {
       const options = {method, headers: {'Content-Type': 'application/json'}};
