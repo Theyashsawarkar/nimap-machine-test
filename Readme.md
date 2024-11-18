@@ -1,6 +1,6 @@
 # Product and Category Manager 🛍️📦
 
-This project allows you to manage categories and products with ease. It supports **CRUD** (Create, Read, Update, Delete) operations for both categories and products. You can also fetch all the products associated with a specific category, making it simple to manage product-category relationships.
+This is a backend Node.js Express application that returns server-rendered HTML files. The HTML files are dynamic in nature, providing a seamless experience for managing products and categories. It supports CRUD (Create, Read, Update, Delete) operations for both categories and products. You can also fetch all the products associated with a specific category, making it simple to manage product-category relationships.
 
 ## Features ⚙️
 
