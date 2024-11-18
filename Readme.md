@@ -27,23 +27,44 @@ This project allows you to manage categories and products with ease. It supports
 - **Pagination**:
   - Navigate through categories and products with pagination 🔄
 
+## Backend Routes and Functionality
+
+### Products Routes
+
+| **Route**           | **HTTP Method** | **Functionality**                  | **Parameters**                                                                                       | **Source**   |
+| ------------------- | --------------- | ---------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------ |
+| `/api/products`     | `GET`           | Fetch all products with pagination | **Query**: `page` (optional, number), `pageSize` (optional, number)                                  | Query Params |
+| `/api/products/:id` | `GET`           | Fetch a specific product by its ID | **Path**: `id` (required, product ID)                                                                | Path Param   |
+| `/api/products`     | `POST`          | Add a new product                  | **Body**: `product_name` (string), `category_id` (number)                                            | JSON Body    |
+| `/api/products/:id` | `PUT`           | Update an existing product         | **Path**: `id` (required, product ID) <br> **Body**: `product_name` (string), `category_id` (number) | Path + JSON  |
+| `/api/products/:id` | `DELETE`        | Delete a product by its ID         | **Path**: `id` (required, product ID)                                                                | Path Param   |
+
+---
+
+### Categories Routes
+
+| **Route**                      | **HTTP Method** | **Functionality**                          | **Parameters**                                                                 | **Source**   |
+| ------------------------------ | --------------- | ------------------------------------------ | ------------------------------------------------------------------------------ | ------------ |
+| `/api/categories`              | `GET`           | Fetch all categories with pagination       | **Query**: `page` (optional, number), `pageSize` (optional, number)            | Query Params |
+| `/api/categories/:id`          | `GET`           | Fetch a specific category by its ID        | **Path**: `id` (required, category ID)                                         | Path Param   |
+| `/api/categories`              | `POST`          | Add a new category                         | **Body**: `category_name` (string)                                             | JSON Body    |
+| `/api/categories/:id`          | `PUT`           | Update an existing category                | **Path**: `id` (required, category ID) <br> **Body**: `category_name` (string) | Path + JSON  |
+| `/api/categories/:id`          | `DELETE`        | Delete a category by its ID                | **Path**: `id` (required, category ID)                                         | Path Param   |
+| `/api/categories/category/:id` | `GET`           | Fetch all products for a specific category | **Path**: `id` (required, category ID)                                         | Path Param   |
+
+---
+
+## Notes
+
+- **Pagination**: Both `products` and `categories` support pagination using optional `page` and `pageSize` query parameters.
+- **Parameter Handling**:
+  - **Path Parameters**: For resource identification, e.g., `:id`.
+  - **Query Parameters**: For filtering or pagination, e.g., `page`, `pageSize`.
+  - **JSON Body**: For creating or updating resources.
+
 ## Tech Stack 💻
 
 - **Frontend**: HTML, CSS, Vanilla JavaScript
 - **Backend**: Node.js, Express
 - **Database**: MySQL
 
-## API Endpoints 📡
-
-- **Categories**:
-  - `GET /api/categories` - Fetch all categories
-  - `POST /api/categories` - Create a new category
-  - `PUT /api/categories/:id` - Update a category
-  - `DELETE /api/categories/:id` - Delete a category
-
-- **Products**:
-  - `GET /api/products` - Fetch all products
-  - `POST /api/products` - Create a new product
-  - `PUT /api/products/:id` - Update a product
-  - `DELETE /api/products/:id` - Delete a product
-  - `GET /api/products/category/:categoryId` - Fetch all products for a specific category
