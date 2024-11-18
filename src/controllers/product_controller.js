@@ -48,15 +48,15 @@ JOIN categories c ON p.category_id = c.category_id where p.product_id = ? ;`;
 // Add a new product
 const addNewProduct = (req, res) => {
   const { product_name, category_id } = req.body;
-  const query =
-    "INSERT INTO products (product_name, category_id) VALUES (?, ?)";
+  console.log(req.body); // Log the incoming request body for debugging
+  const query = "INSERT INTO products (product_name, category_id) VALUES (?, ?)";
 
   db.query(query, [product_name, category_id], (err, results) => {
     if (err) {
       console.error(err);
-      res.status(500).send("Error adding product");
+      res.status(500).json({ error: "Error adding product" });
     } else {
-      res.status(201).send("Product added successfully");
+      res.status(201).json({ message: "Product added successfully" });
     }
   });
 };
@@ -90,11 +90,11 @@ const deleteProduct = (req, res) => {
   db.query(query, [req.params.id], (err, results) => {
     if (err) {
       console.error(err);
-      res.status(500).send("Error deleting product");
+      res.status(500).json({ error: "Error deleting product" }); // Send JSON response with error
     } else if (results.affectedRows === 0) {
-      res.status(404).send("Product not found");
+      res.status(404).json({ message: "Product not found" }); // Send JSON response with message
     } else {
-      res.send("Product deleted successfully");
+      res.status(200).json({ message: "Product deleted successfully" }); // Send JSON response with success message
     }
   });
 };

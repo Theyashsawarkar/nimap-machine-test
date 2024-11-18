@@ -44,9 +44,9 @@ const addNewCategory = (req, res) => {
   db.query(query, [category_name], (err, results) => {
     if (err) {
       console.error(err);
-      res.status(500).send("Error adding category");
+      res.status(500).json({ error: "Error adding category" }); // Send JSON on error
     } else {
-      res.status(201).send("Category added successfully");
+      res.status(201).json({ message: "Category added successfully" }); // Send JSON on success
     }
   });
 };
@@ -59,11 +59,11 @@ const updateCategory = (req, res) => {
   db.query(query, [category_name, req.params.id], (err, results) => {
     if (err) {
       console.error(err);
-      res.status(500).send("Error updating category");
+      res.status(500).json({ error: "Error updating category" }); // Send error as JSON
     } else if (results.affectedRows === 0) {
-      res.status(404).send("Category not found");
+      res.status(404).json({ error: "Category not found" }); // Handle not found case
     } else {
-      res.send("Category updated successfully");
+      res.status(200).json({ message: "Category updated successfully" }); // Send success as JSON
     }
   });
 };
@@ -75,11 +75,11 @@ const deleteCategory = (req, res) => {
   db.query(query, [req.params.id], (err, results) => {
     if (err) {
       console.error(err);
-      res.status(500).send("Error deleting category");
+      res.status(500).json({ error: "Error deleting category" }); // Send error as JSON
     } else if (results.affectedRows === 0) {
-      res.status(404).send("Category not found");
+      res.status(404).json({ error: "Category not found" }); // Handle not found case
     } else {
-      res.send("Category deleted successfully");
+      res.status(200).json({ message: "Category deleted successfully" }); // Send success as JSON
     }
   });
 };
