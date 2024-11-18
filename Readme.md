@@ -2,6 +2,12 @@
 
 This is a backend Node.js Express application that returns server-rendered HTML files. The HTML files are dynamic in nature, providing a seamless experience for managing products and categories. It supports CRUD (Create, Read, Update, Delete) operations for both categories and products. You can also fetch all the products associated with a specific category, making it simple to manage product-category relationships.
 
+## Tech Stack 💻
+
+- **Frontend**: HTML, CSS, Vanilla JavaScript
+- **Backend**: Node.js, Express , Ejs
+- **Database**: MySQL
+
 ## Features ⚙️
 
 - **Category Management**:
@@ -62,9 +68,5 @@ This is a backend Node.js Express application that returns server-rendered HTML 
   - **Query Parameters**: For filtering or pagination, e.g., `page`, `pageSize`.
   - **JSON Body**: For creating or updating resources.
 
-## Tech Stack 💻
 
-- **Frontend**: HTML, CSS, Vanilla JavaScript
-- **Backend**: Node.js, Express
-- **Database**: MySQL
 
