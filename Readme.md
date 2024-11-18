@@ -10,21 +10,19 @@ This project allows you to manage categories and products with ease. It supports
   - Delete categories 🗑️
   - Fetch all categories 📑
   
-  ![categories](https://github.com/user-attachments/assets/ad2d3534-61bd-4340-94b8-0b7c1b87b8f3)
+  ![categories](https://github.com/user-attachments/assets/8faf29ce-f93b-4c3d-a39f-6809dde92604)
 
 - **Product Management**:
   - Add new products 🛒
   - Assign products to categories 📦
   - Update product details ✏️
   - Delete products 🗑️
- 
-  ![products](https://github.com/user-attachments/assets/19d110d6-bd14-4d2c-8741-7392a6513d20)
+  
+  ![products](https://github.com/user-attachments/assets/990b9ed2-c6f4-4367-ba20-ca15106f9d69)
     
 - **Fetch all products for a specific category** 🔍
   
-  ![products-by-category](https://github.com/user-attachments/assets/ef4934d2-94f3-4db4-9f00-72637f7ff493)
-    
-
+  ![products-by-category](https://github.com/user-attachments/assets/202c64c9-8e26-4bf9-abf3-bad69c3443fb)
 
 - **Pagination**:
   - Navigate through categories and products with pagination 🔄
@@ -49,4 +47,3 @@ This project allows you to manage categories and products with ease. It supports
   - `PUT /api/products/:id` - Update a product
   - `DELETE /api/products/:id` - Delete a product
   - `GET /api/products/category/:categoryId` - Fetch all products for a specific category
-
