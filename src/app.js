@@ -9,6 +9,7 @@ const app = express();
 // Middleware
 app.use(bodyParser.json());
 app.use(cors());
+app.use(express.static('src/views'));
 
 // Test route
 app.get('/', (req, res) => {
