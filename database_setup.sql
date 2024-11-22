@@ -1,35 +1,28 @@
-DROP DATABASE machine_test;
-CREATE DATABASE machine_test;
+CREATE DATABASE IF NOT EXISTS machine_test;
 USE machine_test;
-
 CREATE TABLE categories (
   category_id INT AUTO_INCREMENT PRIMARY KEY,
   category_name VARCHAR(255) NOT NULL
 );
-
 CREATE TABLE products (
   product_id INT AUTO_INCREMENT PRIMARY KEY,
   product_name VARCHAR(255) NOT NULL,
   category_id INT,
   FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
-
-INSERT INTO categories (category_name) 
-VALUES 
-  ('Electronics'), 
-  ('Books'), 
-  ('Clothing'), 
-  ('Furniture'), 
-  ('Toys'), 
-  ('Sports'), 
-  ('Health'), 
-  ('Grocery'), 
-  ('Beauty'), 
+INSERT INTO categories (category_name)
+VALUES ('Electronics'),
+  ('Books'),
+  ('Clothing'),
+  ('Furniture'),
+  ('Toys'),
+  ('Sports'),
+  ('Health'),
+  ('Grocery'),
+  ('Beauty'),
   ('Organic');
-
-INSERT INTO products (product_name, category_id) 
-VALUES
-  ('Smartphone', 1),
+INSERT INTO products (product_name, category_id)
+VALUES ('Smartphone', 1),
   ('Laptop', 1),
   ('Headphones', 1),
   ('Smartwatch', 1),
@@ -84,7 +77,3 @@ VALUES
   ('Vitamins - C', 9),
   ('Organic Apples', 10),
   ('Organic Bananas', 10);
-  
-  SELECT * FROM categories;
-SELECT * FROM products;
-
